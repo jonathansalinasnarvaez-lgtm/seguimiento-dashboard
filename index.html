@@ -1429,13 +1429,27 @@
                         reject(new Error(`No se pudo leer la hoja "${sheetName}" desde Google Sheets.`));
                         return;
                     }
-                    const rows = (payload.table.rows || []).map(r =>
-                        (r.c || []).map(cell => {
-                            if (!cell) return '';
-                            if (cell.v !== undefined && cell.v !== null) return cell.v;
-                            return (cell.f !== undefined && cell.f !== null) ? cell.f : '';
-                        })
-                    );
+                    const cols = payload.table.cols || [];
+                    const colIndices = cols.map((col, idx) => {
+                        if (col && col.id && /^[A-Z]+$/i.test(col.id.trim())) {
+                            return XLSX.utils.decode_col(col.id.trim().toUpperCase());
+                        }
+                        return idx;
+                    });
+                    const rows = (payload.table.rows || []).map(r => {
+                        const rowArr = [];
+                        (r.c || []).forEach((cell, idx) => {
+                            const targetCol = colIndices[idx] !== undefined ? colIndices[idx] : idx;
+                            if (!cell) {
+                                rowArr[targetCol] = '';
+                            } else if (cell.v !== undefined && cell.v !== null) {
+                                rowArr[targetCol] = cell.v;
+                            } else {
+                                rowArr[targetCol] = (cell.f !== undefined && cell.f !== null) ? cell.f : '';
+                            }
+                        });
+                        return rowArr;
+                    });
                     resolve(rows);
                 };
 
@@ -1678,8 +1692,8 @@
             const idxActualSalon = findByHeader(['actual salon', 'av/sav salon'], 20);
             const idxMetaSalon = findByHeader(['meta salon'], 21);
             const idxCumpl = findByHeader(['cumpl.', 'cumpl', 'cumplimiento'], 22);
-            const idxVisitas = 36; // Columna AK
-            const idxCursesTrx = 37; // Columna AL
+            const idxVisitas = XLSX.utils.decode_col('AK'); // Columna AK (36)
+            const idxCursesTrx = XLSX.utils.decode_col('AL'); // Columna AL (37)
             const idxTasa = findByHeader(['% tasa', 'tasa'], 38);
 
             const startIdx = GoogleSheetConfig.startRowAvSav - 1;
