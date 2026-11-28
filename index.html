@@ -1186,14 +1186,11 @@
            UTILIDADES DE FORMATO Y PARSEO
            ========================================================================= */
         function formatCLP(value) {
-            const num = Math.round(Number(value) || 0);
-            return `$ ${new Intl.NumberFormat('es-CL', { maximumFractionDigits: 0 }).format(num)}`;
-        }
-
-        function formatAvSavMillions(value) {
-            const num = Number(value);
-            if (!Number.isFinite(num)) return '$0,00';
-            return `$${num.toFixed(2).replace('.', ',')}`;
+            const num = Number(value) || 0;
+            return `$${new Intl.NumberFormat('es-CL', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(num)}`;
         }
 
         function formatInt(value) {
@@ -2230,8 +2227,8 @@
             document.getElementById('av-zonas-tbody').innerHTML = zoneData.rows.map(z => `
                 <tr class="hover:bg-blue-50/40 dark:hover:bg-slate-800/70 transition-colors">
                     <td class="py-3 px-3 text-center font-bold text-slate-900 dark:text-white">${z.label}</td>
-                    <td class="py-3 px-3 text-center font-bold text-slate-800 dark:text-slate-100 tabular-nums">${formatAvSavMillions(z.actualSalon)}</td>
-                    <td class="py-3 px-3 text-center font-semibold text-slate-700 dark:text-slate-300 tabular-nums">${formatAvSavMillions(z.metaSalon)}</td>
+                    <td class="py-3 px-3 text-center font-bold text-slate-800 dark:text-slate-100 tabular-nums">${formatCLP(z.actualSalon)}</td>
+                    <td class="py-3 px-3 text-center font-semibold text-slate-700 dark:text-slate-300 tabular-nums">${formatCLP(z.metaSalon)}</td>
                     <td class="py-3 px-3 text-center font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">${formatPct(z.cumpl)}</td>
                     <td class="py-3 px-3 text-center font-bold text-slate-800 dark:text-slate-200 tabular-nums">${formatInt(z.visitas)}</td>
                     <td class="py-3 px-3 text-center font-semibold text-slate-700 dark:text-slate-300 tabular-nums">${formatInt(z.curses)}</td>
@@ -2242,8 +2239,8 @@
             document.getElementById('av-zonas-tfoot').innerHTML = `
                 <tr>
                     <td class="py-3.5 px-3 text-center uppercase">${zoneData.total.label}</td>
-                    <td class="py-3.5 px-3 text-center tabular-nums">${formatAvSavMillions(zoneData.total.actualSalon)}</td>
-                    <td class="py-3.5 px-3 text-center tabular-nums">${formatAvSavMillions(zoneData.total.metaSalon)}</td>
+                    <td class="py-3.5 px-3 text-center tabular-nums">${formatCLP(zoneData.total.actualSalon)}</td>
+                    <td class="py-3.5 px-3 text-center tabular-nums">${formatCLP(zoneData.total.metaSalon)}</td>
                     <td class="py-3.5 px-3 text-center tabular-nums">${formatPct(zoneData.total.cumpl)}</td>
                     <td class="py-3.5 px-3 text-center tabular-nums">${formatInt(zoneData.total.visitas)}</td>
                     <td class="py-3.5 px-3 text-center tabular-nums">${formatInt(zoneData.total.curses)}</td>
@@ -2262,8 +2259,8 @@
                 document.getElementById('av-suc-tbody').innerHTML = sucList.map(b => `
                     <tr class="hover:bg-blue-50/40 dark:hover:bg-slate-800/70 transition-colors">
                         <td class="py-3 px-3 text-center font-bold text-slate-900 dark:text-white">${b.sucursal}</td>
-                        <td class="py-3 px-3 text-center font-bold text-slate-800 dark:text-slate-100 tabular-nums">${formatAvSavMillions(b.actualSalon)}</td>
-                        <td class="py-3 px-3 text-center font-semibold text-slate-700 dark:text-slate-300 tabular-nums">${formatAvSavMillions(b.metaSalon)}</td>
+                        <td class="py-3 px-3 text-center font-bold text-slate-800 dark:text-slate-100 tabular-nums">${formatCLP(b.actualSalon)}</td>
+                        <td class="py-3 px-3 text-center font-semibold text-slate-700 dark:text-slate-300 tabular-nums">${formatCLP(b.metaSalon)}</td>
                         <td class="py-3 px-3 text-center font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">${formatPct(b.cumpl)}</td>
                         <td class="py-3 px-3 text-center font-bold text-slate-800 dark:text-slate-200 tabular-nums">${formatInt(b.visitas)}</td>
                         <td class="py-3 px-3 text-center font-semibold text-slate-700 dark:text-slate-300 tabular-nums">${formatInt(b.curses)}</td>
@@ -2281,8 +2278,8 @@
                 document.getElementById('av-suc-tfoot').innerHTML = `
                     <tr>
                         <td class="py-3.5 px-3 text-center uppercase">TOTAL (${sucList.length})</td>
-                        <td class="py-3.5 px-3 text-center tabular-nums">${formatAvSavMillions(sActual)}</td>
-                        <td class="py-3.5 px-3 text-center tabular-nums">${formatAvSavMillions(sMeta)}</td>
+                        <td class="py-3.5 px-3 text-center tabular-nums">${formatCLP(sActual)}</td>
+                        <td class="py-3.5 px-3 text-center tabular-nums">${formatCLP(sMeta)}</td>
                         <td class="py-3.5 px-3 text-center tabular-nums">${formatPct(sCumpl)}</td>
                         <td class="py-3.5 px-3 text-center tabular-nums">${formatInt(sVisitas)}</td>
                         <td class="py-3.5 px-3 text-center tabular-nums">${formatInt(sCurses)}</td>
@@ -2370,6 +2367,7 @@
                 const ofertasTR = explicit ? explicit.ofertasTR : fromBranches.reduce((s, b) => s + b.ofertasTR, 0);
                 const ofAceptadas = explicit ? explicit.ofAceptadas : fromBranches.reduce((s, b) => s + b.ofAceptadas, 0);
 
+                // Formato unificado con Detalle CAPTAS Sucursal: (TR Salón / Meta) * 100[cite: 3]
                 const cumpl = meta > 0
                     ? (trSalon / meta) * 100
                     : (fromBranches.length ? fromBranches.reduce((s, b) => s + b.cumpl, 0) / fromBranches.length : 0);
@@ -3249,3 +3247,4 @@
     </script>
 </body>
 </html>
+```[cite: 2, 3]
