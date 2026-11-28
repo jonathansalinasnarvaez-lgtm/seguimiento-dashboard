@@ -1678,10 +1678,9 @@
             const idxActualSalon = findByHeader(['actual salon', 'av/sav salon'], 20);
             const idxMetaSalon = findByHeader(['meta salon'], 21);
             const idxCumpl = findByHeader(['cumpl.', 'cumpl', 'cumplimiento'], 22);
-            const idxVisitas = findByHeader(['visitas'], 36);
+            const idxVisitas = 36; // Columna AK
+            const idxCursesTrx = 37; // Columna AL
             const idxTasa = findByHeader(['% tasa', 'tasa'], 38);
-            const idxTrx = findByHeader(['trx', 'transacciones'], -1);
-            const idxCurses = findByHeader(['curses', 'curso', 'cursos'], -1);
 
             const startIdx = GoogleSheetConfig.startRowAvSav - 1;
             const items = [];
@@ -1704,10 +1703,10 @@
                 const actualSalon = parseNumberFlexible(row[idxActualSalon]);
                 const metaSalon = parseNumberFlexible(row[idxMetaSalon]);
                 const cumpl = parsePctCell(row[idxCumpl]);
-                const visitas = parseNumberFlexible(row[idxVisitas]);
+                const visitas = parseNumberFlexible(row[idxVisitas]); // Columna AK
                 const tasa = parsePctCell(row[idxTasa]);
-                const trx = idxTrx !== -1 ? parseNumberFlexible(row[idxTrx]) : 0;
-                const curses = idxCurses !== -1 ? parseNumberFlexible(row[idxCurses]) : (trx || 0);
+                const trx = parseNumberFlexible(row[idxCursesTrx]); // Columna AL
+                const curses = trx; // Columna AL
 
                 items.push({
                     sucursal: upperSuc,
