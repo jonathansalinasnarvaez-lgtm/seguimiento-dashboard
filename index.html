@@ -1470,7 +1470,7 @@
 
             // 1. Intentar descargar el XLSX completo (contiene todas las pestañas: "Av Sav", "Tarjetas", "Vendedores Salón")
             try {
-                const urlXlsx = `https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx&t=${cacheBuster}`;
+                const urlXlsx = `https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx&t=${cacheBuster}&r=${Math.random().toString(36).slice(2)}`;
                 const resp = await fetch(urlXlsx, { method: 'GET', cache: 'no-store' });
                 if (resp.ok) {
                     const ct = (resp.headers.get('content-type') || '').toLowerCase();
@@ -1694,7 +1694,7 @@
             const idxCumpl = findByHeader(['cumpl.', 'cumpl', 'cumplimiento'], 22);
             const idxVisitas = XLSX.utils.decode_col('AK'); // Columna AK (36)
             const idxCursesTrx = XLSX.utils.decode_col('AL'); // Columna AL (37)
-            const idxTasa = findByHeader(['% tasa', 'tasa'], 38);
+            const idxTasa = XLSX.utils.decode_col('AM'); // Columna AM (38)
 
             const startIdx = GoogleSheetConfig.startRowAvSav - 1;
             const items = [];
